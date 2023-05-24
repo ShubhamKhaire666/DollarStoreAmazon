@@ -17,5 +17,30 @@ namespace DollarStoreAmazon.Controllers
             
             return View(objCategoryList);
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+             return View();
+        }  
+        
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Category obj)
+        {
+            if(obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("name", "The display order cant be same as the name.");
+            }
+            if (ModelState.IsValid)
+            {
+                dbContext.Categories.Add(obj);
+                dbContext.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
+        }
     }
 }
