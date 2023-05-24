@@ -82,9 +82,9 @@ namespace DollarStoreAmazon.Controllers
             }
 
             return View(obj);
-        }  
-        
-        
+        }
+
+
         public IActionResult Delete(int? id)
         {
 
