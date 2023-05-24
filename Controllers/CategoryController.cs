@@ -37,6 +37,7 @@ namespace DollarStoreAmazon.Controllers
             {
                 dbContext.Categories.Add(obj);
                 dbContext.SaveChanges();
+                TempData["success"] = "Category Created successfully";
                 return RedirectToAction("Index");
             }
 
@@ -75,6 +76,8 @@ namespace DollarStoreAmazon.Controllers
             {
                 dbContext.Categories.Update(obj);
                 dbContext.SaveChanges();
+                TempData["success"] = "Category Edited successfully";
+
                 return RedirectToAction("Index");
             }
 
@@ -112,7 +115,9 @@ namespace DollarStoreAmazon.Controllers
 
                 dbContext.Categories.Remove(obj);
                 dbContext.SaveChanges();
-                return RedirectToAction("Index");
+            TempData["success"] = "Category Deleted successfully";
+
+            return RedirectToAction("Index");
         }
     }
 }
