@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DollarStoreAmazon", "DollarStoreAmazon.csproj", "{556136A3-5D55-4EDE-90B0-6260A5077014}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DollarStoreAmazon_Temp", "..\DollarStoreAmazon_Temp\DollarStoreAmazon_Temp.csproj", "{D1BE3719-3CDC-41D1-BF28-5795CC3966DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DollarStoreAmazon_Temp", "..\DollarStoreAmazon_Temp\DollarStoreAmazon_Temp.csproj", "{D1BE3719-3CDC-41D1-BF28-5795CC3966DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
