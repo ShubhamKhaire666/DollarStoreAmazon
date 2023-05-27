@@ -1,4 +1,5 @@
 ﻿using DollarStoreAmazon.DataAccess.Data;
+using DollarStoreAmazon.DataAccess.Repository.IRepository;
 using DollarStoreAmazon.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +7,14 @@ namespace DollarStoreAmazon.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly DollarStoreAmazonDbContext dbContext;
-        public CategoryController(DollarStoreAmazonDbContext DbContext)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoryController(ICategoryRepository DbContext)
         {
-            this.dbContext = DbContext;
+            this._categoryRepository = DbContext;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = dbContext.Categories;
+            IEnumerable<Category> objCategoryList = _categoryRepository.GetAll();
             
             return View(objCategoryList);
         }
@@ -35,8 +36,8 @@ namespace DollarStoreAmazon.Controllers
             }
             if (ModelState.IsValid)
             {
-                dbContext.Categories.Add(obj);
-                dbContext.SaveChanges();
+                _categoryRepository.Add(obj);
+                _categoryRepository.Save();
                 TempData["success"] = "Category Created successfully";
                 return RedirectToAction("Index");
             }
@@ -53,7 +54,7 @@ namespace DollarStoreAmazon.Controllers
             }
 
             
-            var categoryFromDb = dbContext.Categories.Find(id);
+            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
 
             if(categoryFromDb==null)
             {
@@ -74,8 +75,8 @@ namespace DollarStoreAmazon.Controllers
             }
             if (ModelState.IsValid)
             {
-                dbContext.Categories.Update(obj);
-                dbContext.SaveChanges();
+                _categoryRepository.Add(obj);
+                _categoryRepository.Save();
                 TempData["success"] = "Category Edited successfully";
 
                 return RedirectToAction("Index");
@@ -93,10 +94,10 @@ namespace DollarStoreAmazon.Controllers
                 return NotFound();
             }
 
-            
-            var categoryFromDb = dbContext.Categories.Find(id);
 
-            if(categoryFromDb==null)
+            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+
+            if (categoryFromDb==null)
             {
                 return NotFound();
             }
@@ -109,12 +110,12 @@ namespace DollarStoreAmazon.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int? id)
         {
-            var obj = dbContext.Categories.Find(id);
-            if (obj == null)
+            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+            if (categoryFromDb == null)
                 return NotFound();
 
-                dbContext.Categories.Remove(obj);
-                dbContext.SaveChanges();
+            _categoryRepository.Remove(categoryFromDb);
+            _categoryRepository.Save();
             TempData["success"] = "Category Deleted successfully";
 
             return RedirectToAction("Index");
