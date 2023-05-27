@@ -1,4 +1,4 @@
-using DollarStoreAmazon.Data;
+using DollarStoreAmazon.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

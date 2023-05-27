@@ -1,5 +1,5 @@
-﻿using DollarStoreAmazon.Data;
-using DollarStoreAmazon.Models;
+﻿using DollarStoreAmazon.DataAccess.Data;
+using DollarStoreAmazon.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DollarStoreAmazon.Controllers

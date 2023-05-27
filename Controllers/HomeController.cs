@@ -1,4 +1,4 @@
-﻿using DollarStoreAmazon.Models;
+﻿using DollarStoreAmazon.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
