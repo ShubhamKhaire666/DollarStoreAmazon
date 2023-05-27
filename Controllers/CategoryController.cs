@@ -75,7 +75,7 @@ namespace DollarStoreAmazon.Controllers
             }
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(obj);
+                _categoryRepository.Update(obj);
                 _categoryRepository.Save();
                 TempData["success"] = "Category Edited successfully";
 
