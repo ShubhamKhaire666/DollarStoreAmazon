@@ -2,6 +2,8 @@
 using DollarStoreAmazon.DataAccess.Repository.IRepository;
 using DollarStoreAmazon.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace DollarStoreAmazon.Areas.Admin.Controllers
 {
@@ -16,14 +18,25 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> objProductList = _unitOfWork.Product.GetAll();
+            List<Product> products = _unitOfWork.Product.GetAll().ToList();
 
-            return View(objProductList);
+
+
+            return View(products);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> categoryList = _unitOfWork.Category.GetAll()
+    .Select(u => new SelectListItem
+    {
+        Text = u.Name,
+        Value = u.Id.ToString()
+    });
+
+            ViewBag.CategoryList = categoryList;
+
             return View();
         }
 
