@@ -3,60 +3,61 @@ using DollarStoreAmazon.DataAccess.Repository.IRepository;
 using DollarStoreAmazon.Model;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DollarStoreAmazon.Controllers
+namespace DollarStoreAmazon.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoryController(ICategoryRepository DbContext)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            this._categoryRepository = DbContext;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = _categoryRepository.GetAll();
-            
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+
             return View(objCategoryList);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-             return View();
-        }  
-        
-        
+            return View();
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category obj)
         {
-            if(obj.Name == obj.DisplayOrder.ToString())
+            if (obj.Name == obj.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("name", "The display order cant be same as the name.");
             }
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(obj);
-                _categoryRepository.Save();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Created successfully";
                 return RedirectToAction("Index");
             }
 
             return View(obj);
         }
-        
+
         public IActionResult Edit(int? id)
         {
 
-            if(id== null && id == 0)
+            if (id == null && id == 0)
             {
                 return NotFound();
             }
 
-            
-            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
 
-            if(categoryFromDb==null)
+            var categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
+
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -75,8 +76,8 @@ namespace DollarStoreAmazon.Controllers
             }
             if (ModelState.IsValid)
             {
-                _categoryRepository.Update(obj);
-                _categoryRepository.Save();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Edited successfully";
 
                 return RedirectToAction("Index");
@@ -89,15 +90,15 @@ namespace DollarStoreAmazon.Controllers
         public IActionResult Delete(int? id)
         {
 
-            if(id== null && id == 0)
+            if (id == null && id == 0)
             {
                 return NotFound();
             }
 
 
-            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+            var categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
-            if (categoryFromDb==null)
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -106,16 +107,16 @@ namespace DollarStoreAmazon.Controllers
             return View(categoryFromDb);
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int? id)
         {
-            var categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+            var categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
                 return NotFound();
 
-            _categoryRepository.Remove(categoryFromDb);
-            _categoryRepository.Save();
+            _unitOfWork.Category.Remove(categoryFromDb);
+            _unitOfWork.Save();
             TempData["success"] = "Category Deleted successfully";
 
             return RedirectToAction("Index");
