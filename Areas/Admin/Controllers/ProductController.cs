@@ -27,10 +27,10 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
-            IEnumerable<SelectListItem> categoryList = _unitOfWork.Category.GetAll()
-            .Select(u => new SelectListItem
+
+            IEnumerable<SelectListItem> categoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
@@ -42,17 +42,23 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
                 Product = new Product()
             };
 
+            if (id == null || id == 0)
+            {
+                return View(productVM);
+            }
+            else
+            {
+                productVM.Product =  _unitOfWork.Product.Get(u => u.Id == id);
+                return View(productVM);
+            }
             //ViewBag.CategoryList = categoryList;
-
             //ViewData["CategoryList"] = categoryList;
-
-            return View(productVM);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductVM obj)
+        public IActionResult Upsert(ProductVM obj, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -65,41 +71,41 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
             return View(obj);
         }
 
-        public IActionResult Edit(int? id)
-        {
+        //public IActionResult Edit(int? id)
+        //{
 
-            if (id == null && id == 0)
-            {
-                return NotFound();
-            }
-
-
-            var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
+        //    if (id == null && id == 0)
+        //    {
+        //        return NotFound();
+        //    }
 
 
-            return View(productFromDb);
-        }
+        //    var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Update(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Category Edited successfully";
+        //    if (productFromDb == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-                return RedirectToAction("Index");
-            }
 
-            return View(obj);
-        }
+        //    return View(productFromDb);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Edit(Product obj)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Product.Update(obj);
+        //        _unitOfWork.Save();
+        //        TempData["success"] = "Category Edited successfully";
+
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(obj);
+        //}
 
 
         public IActionResult Delete(int? id)

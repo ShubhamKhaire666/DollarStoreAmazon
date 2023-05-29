@@ -4,12 +4,13 @@
 	<div class="card-header bg-black bg-gradient ml-0 py-3 ">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h2 class="text-white py-2"> Create Product</h2>
+				<h2 class="text-white py-2"> @(Model.Product.Id!=0?"Update Product":"Create Product")</h2>
 			</div>
 		</div>
 	</div>
 	<div class="card-body p-4 ">
-		<form method="post" class="row">
+		<form method="post" class="row" enctype="multipart/form-data">
+			<input asp-for="Product.Id" hidden />
 			<div class="border p-3 mt-4">
 				<div asp-validation-summary="All"></div>
 				<div class="mb-3">
@@ -65,8 +66,7 @@
 
 				<div class="mb-3">
 					<label asp-for="Product.ImageUrl"></label>
-					<input asp-for="Product.ImageUrl" class="form-control" />
-					<span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+					<input type="file" class="form-control" />
 				</div>
 
 				<div class="mb-3">
