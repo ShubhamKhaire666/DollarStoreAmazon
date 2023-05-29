@@ -29,11 +29,11 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
         public IActionResult Create()
         {
             IEnumerable<SelectListItem> categoryList = _unitOfWork.Category.GetAll()
-    .Select(u => new SelectListItem
-    {
-        Text = u.Name,
-        Value = u.Id.ToString()
-    });
+            .Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
 
             ViewBag.CategoryList = categoryList;
 
