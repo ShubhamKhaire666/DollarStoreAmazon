@@ -71,6 +71,16 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName) ;
                     string productPath = Path.Combine(wwwRootPath, @"Images\Products");
 
+                    if(!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
                     using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
@@ -78,10 +88,18 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
                     obj.Product.ImageUrl = @"\Images\Products\" + fileName;
                 }
 
-                _unitOfWork.Product.Add(obj.Product);
+                if(obj.Product.Id == 0 || obj.Product.Id == null)
+                {
+                    _unitOfWork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(obj.Product);
+                }
                 _unitOfWork.Save();
                 TempData["success"] = "Category Created successfully";
                 return RedirectToAction("Index");
+
             }
 
             return View(obj);
