@@ -178,11 +178,11 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
         #region API Calls
 
         [HttpGet]
-        public IActionResult GetAll(int id)
+        public IActionResult GetAll()
         {
-            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            List<Product> objProducts = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
-            return Json(new { data = products});
+            return Json(new { data = objProducts });
         }
 
         #endregion
