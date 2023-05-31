@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DollarStoreAmazonDbContext>(
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<DollarStoreAmazonDbContext>();
 
+builder.Services.AddRazorPages();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -37,6 +38,7 @@ app.UseAuthentication();;
 
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
