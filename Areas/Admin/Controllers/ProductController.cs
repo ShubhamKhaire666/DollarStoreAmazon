@@ -21,7 +21,7 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
+            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
             return View(products);
         }
@@ -48,7 +48,7 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
             }
             else
             {
-                productVM.Product =  _unitOfWork.Product.Get(u => u.Id == id);
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
                 return View(productVM);
             }
             //ViewBag.CategoryList = categoryList;
@@ -64,12 +64,12 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-                if(file != null)
+                if (file != null)
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName) ;
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"Images\Products");
 
-                    if(!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                    if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
                     {
                         var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
 
@@ -85,8 +85,16 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
                     }
                     obj.Product.ImageUrl = @"\Images\Products\" + fileName;
                 }
+                else
+                {
+                    obj.Product.ImageUrl = "";
+                    _unitOfWork.Product.Add(obj.Product);
+                    _unitOfWork.Save();
+                    TempData["success"] = "Category Created successfully";
+                    return RedirectToAction("Index");
+                }
 
-                if(obj.Product.Id == 0 || obj.Product.Id == null)
+                if (obj.Product.Id == 0 || obj.Product.Id == null)
                 {
                     _unitOfWork.Product.Add(obj.Product);
                 }
@@ -140,40 +148,40 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
         //}
 
 
-        public IActionResult Delete(int? id)
-        {
+        //public IActionResult Delete(int? id)
+        //{
 
-            if (id == null && id == 0)
-            {
-                return NotFound();
-            }
-
-
-            var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
+        //    if (id == null && id == 0)
+        //    {
+        //        return NotFound();
+        //    }
 
 
-            return View(productFromDb);
-        }
+        //    var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int? id)
-        {
-            var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-            if (productFromDb == null)
-                return NotFound();
+        //    if (productFromDb == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _unitOfWork.Product.Remove(productFromDb);
-            _unitOfWork.Save();
-            TempData["success"] = "Category Deleted successfully";
 
-            return RedirectToAction("Index");
-        }
+        //    return View(productFromDb);
+        //}
+
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult DeletePOST(int? id)
+        //{
+        //    var productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
+        //    if (productFromDb == null)
+        //        return NotFound();
+
+        //    _unitOfWork.Product.Remove(productFromDb);
+        //    _unitOfWork.Save();
+        //    TempData["success"] = "Category Deleted successfully";
+
+        //    return RedirectToAction("Index");
+        //}
 
         #region API Calls
 
@@ -183,6 +191,29 @@ namespace DollarStoreAmazon.Areas.Admin.Controllers
             List<Product> objProducts = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
 
             return Json(new { data = objProducts });
+        }
+
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var objProduct = _unitOfWork.Product.Get(u => u.Id == id);
+
+            if (objProduct == null)
+                return Json(new { success = false, message = "Error While Detecting the Object" });
+
+
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, objProduct.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _unitOfWork.Product.Remove(objProduct);
+            _unitOfWork.Save();
+
+            return Json(new { success= true, message="Delete was succesful" });
         }
 
         #endregion
