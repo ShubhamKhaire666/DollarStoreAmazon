@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DollarStoreAmazon.DataAccess\DollarStoreAmazon.DataAccess.csproj" />
     <ProjectReference Include="..\DollarStoreAmazon.Model\DollarStoreAmazon.Model.csproj" />
+    <ProjectReference Include="..\DollarStoreAmazon.Utility\DollarStoreAmazon.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
